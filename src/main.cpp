@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#define DEBUG
+
 enum PINOUT {
     PIN_LED_RED,
     PIN_LED_GREEN,
@@ -72,10 +74,12 @@ void set_pwm(ColorRBGW c)
         uint8_t color = (uint8_t) base[i];
         analogWrite(PINOUT[i], color);
 
+#ifdef DEBUG
         Serial.print("writing to pin: ");
         Serial.print(PINOUT[i]);
         Serial.print(" with value: ");
         Serial.println(color);
+#endif
     }
 }
 
@@ -105,11 +109,15 @@ void loop()
         int pwm_val = parse_serial(Serial.readString(), &c);
         if (pwm_val == -1)
         {
+#ifdef DEBUG
             Serial.println("Error invalid value try [0-255]");
+#endif
         }
         else
         {
+#ifdef DEBUG
             print_color(&c);
+#endif
             set_pwm(c);
         }
 
