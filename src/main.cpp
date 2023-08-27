@@ -67,10 +67,15 @@ int parse_serial(String str, ColorRBGW *c)
 void set_pwm(ColorRBGW c)
 {
     uint8_t *base = &c.r;
-    for (int pin : PINOUT)
+    for (size_t i = 0; i < PIN_COUNT; i++)
     {
-        uint8_t color = (uint8_t) base[pin];
-        analogWrite(pin, color);
+        uint8_t color = (uint8_t) base[i];
+        analogWrite(PINOUT[i], color);
+
+        Serial.print("writing to pin: ");
+        Serial.print(PINOUT[i]);
+        Serial.print(" with value: ");
+        Serial.println(color);
     }
 }
 
@@ -102,6 +107,11 @@ void loop()
         {
             Serial.println("Error invalid value try [0-255]");
         }
-        print_color(&c);
+        else
+        {
+            print_color(&c);
+            set_pwm(c);
+        }
+
     }
 }
