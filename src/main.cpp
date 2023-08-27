@@ -34,23 +34,35 @@ bool is_valid_param(String s)
     return true;
 }
 
-int parse_serial(ColorRBGW *c)
+void print_string(String name, String s)
 {
-    uint8_t *base = &(*c).r;
-    const static int PARAM_COUNT = 4;
-    String s = Serial.readString();
-
-    for (size_t i = 0; i < PARAM_COUNT; i++)
-    {
-        base[i] = s.substring(0, s.indexOf(',', 1)).toInt();
-        
-    }
-    return 1;
+    Serial.print(name);
+    Serial.print(" [");
+    Serial.print(s);
+    Serial.println("]");
 }
 
-// data.remove(data.indexOf(','));
-// Serial.println("X: " + data);
-// return data.toInt();
+int parse_serial(String str, ColorRBGW *c)
+{
+    uint8_t *base = &(*c).r;
+    str.trim();
+
+    const char *s = str.c_str();
+    size_t i = 0;
+    while (*s && i <= 4)
+    {
+        while (*s && !isdigit(*s))
+            s++;
+        int val = atoi(s);
+        base[i] = val;
+        while (*s && isdigit(*s))
+            s++;
+        i++;
+    }
+    
+
+    return 1;
+}
 
 void set_pwm(ColorRBGW c)
 {
@@ -64,8 +76,14 @@ void set_pwm(ColorRBGW c)
 
 void print_color(ColorRBGW *c)
 {
-    Serial
-
+    Serial.print("r: ");
+    Serial.println(c->r);
+    Serial.print("g: ");
+    Serial.println(c->g);
+    Serial.print("b: ");
+    Serial.println(c->b);
+    Serial.print("w: ");
+    Serial.println(c->w);
 }
 
 void setup()
@@ -79,16 +97,11 @@ void loop()
     if (Serial.available())
     {
         ColorRBGW c;
-        int pwm_val = parse_serial(&c);
+        int pwm_val = parse_serial(Serial.readString(), &c);
         if (pwm_val == -1)
         {
             Serial.println("Error invalid value try [0-255]");
         }
-        else
-        {
-            // set_pwm(c);
-            Serial.print("pwm val: ");
-            Serial.println(pwm_val);
-        }
+        print_color(&c);
     }
 }
