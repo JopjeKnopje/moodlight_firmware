@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#define DEBUG
+// #define DEBUG
 
 enum PINOUT {
     PIN_LED_RED,
