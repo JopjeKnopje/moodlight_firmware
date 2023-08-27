@@ -97,8 +97,8 @@ void print_color(ColorRBGW *c)
 
 void setup()
 {
-    Serial.begin(9600);
-    Serial.setTimeout(250);
+    Serial.begin(115200);
+    Serial.setTimeout(50);
 }
 
 void loop()
